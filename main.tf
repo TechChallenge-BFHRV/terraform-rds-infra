@@ -10,21 +10,43 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+resource "aws_subnet" "public_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
   
   tags = {
-    Name = "public-subnet"
+    Name = "public-subnet-1"
   }
 }
 
-resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+resource "aws_subnet" "public_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "us-east-1b"
   
   tags = {
-    Name = "private-subnet"
+    Name = "public-subnet-2"
+  }
+}
+
+resource "aws_subnet" "private_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "us-east-1a"
+  
+  tags = {
+    Name = "private-subnet-1"
+  }
+}
+
+resource "aws_subnet" "private_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.4.0/24"
+  availability_zone = "us-east-1b"
+  
+  tags = {
+    Name = "private-subnet-2"
   }
 }
 
@@ -49,29 +71,30 @@ resource "aws_security_group" "rds_sg" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier           = "postgres-db"
+  identifier           = "my-postgres-db"
   engine               = "postgres"
   engine_version       = "13.7"
   instance_class       = "db.t3.micro"
   allocated_storage    = 20
   storage_type         = "gp2"
   username             = "dbadmin"
-  password             = "teste123"
+  password             = "YourStrongPasswordHere"
   db_name              = "mydb"
   parameter_group_name = "default.postgres13"
   skip_final_snapshot  = true
+  multi_az             = false 
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.default.name
 
   tags = {
-    Name = "postgres"
+    Name = "MyPostgresDB"
   }
 }
 
 resource "aws_db_subnet_group" "default" {
   name       = "main"
-  subnet_ids = [aws_subnet.public.id, aws_subnet.private.id]
+  subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 
   tags = {
     Name = "My DB subnet group"
