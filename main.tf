@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1"  # Change to your desired region
 }
@@ -13,7 +22,6 @@ resource "aws_db_instance" "postgres_instance" {
   parameter_group_name = "default.postgres14"
   publicly_accessible  = true      # Make it publicly accessible
   skip_final_snapshot  = true      # Skip final snapshot on delete
-
   vpc_security_group_ids = [aws_security_group.rds_sg.id]  # Link to security group
 
   tags = {
