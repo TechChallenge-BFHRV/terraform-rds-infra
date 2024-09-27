@@ -1,17 +1,13 @@
-name: 'Terraform AWS Infrastructure'
+name: Terraform Destroy
+
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-      
+  workflow_dispatch:
+
 jobs:
-  terraform:
+  terraform-destroy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup Terraform
@@ -27,21 +23,10 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: "us-east-1"
 
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: "us-east-1"
-        if: github.ref != 'refs/heads/main'
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        if: github.ref == 'refs/heads/main'
-
