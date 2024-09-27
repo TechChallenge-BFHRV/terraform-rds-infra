@@ -1,55 +1,44 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-1"  # Change to your desired region
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  
+resource "aws_db_instance" "postgres_instance" {
+  identifier           = "postgres-db"
+  allocated_storage    = 20
+  engine               = "postgres"
+  engine_version       = "14"    # Specify desired PostgreSQL version
+  instance_class       = "db.t3.micro"
+  username             = "docker"   # Master username
+  password             = "dockerTech"   # Master password
+  parameter_group_name = "default.postgres14"
+  publicly_accessible  = true      # Make it publicly accessible
+  skip_final_snapshot  = true      # Skip final snapshot on delete
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]  # Link to security group
+
   tags = {
-    Name = "main-vpc"
+    Name = "Postgres-RDS"
   }
 }
 
-resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
-  
-  tags = {
-    Name = "public-subnet"
-  }
-}
-
-resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
-  
-  tags = {
-    Name = "private-subnet"
-  }
-}
-
-resource "aws_subnet" "private2" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.3.0/24"
-  availability_zone = "us-east-1a"
-  
-  tags = {
-    Name = "private-2"
-  }
-}
-
+# Security group to allow inbound traffic on PostgreSQL port
 resource "aws_security_group" "rds_sg" {
-  name        = "rds-security-group"
-  description = "Security group for RDS instance"
-  vpc_id      = aws_vpc.main.id
+  name        = "rds_public_access_sg"
+  description = "Allow inbound access to PostgreSQL"
 
   ingress {
-    from_port   = 5432
+    from_port   = 5432  # PostgreSQL default port
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Open to the public (be careful with this in production)
   }
 
   egress {
@@ -60,67 +49,6 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
-}
-
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
-}
-
-resource "aws_route_table_association" "public_rt_assoc" {
-  subnet_id      = aws_subnet.public.id
-  route_table_id = aws_route_table.public_rt.id
-}
-
-resource "aws_route_table_association" "public_rt_assoc2" {
-  subnet_id      = aws_subnet.private.id
-  route_table_id = aws_route_table.public_rt.id
-}
-
-resource "aws_route_table_association" "public_rt_assoc3" {
-  subnet_id      = aws_subnet.private2.id
-  route_table_id = aws_route_table.public_rt.id
-}
-
-
-resource "aws_db_instance" "default" {
-  identifier           = "postgres-db"
-  engine               = "postgres"
-  engine_version       = "14"
-  instance_class       = "db.t3.micro"
-  allocated_storage    = 20
-  storage_type         = "gp2"
-  username             = "dbadmin"
-  password             = "teste123"
-  db_name              = "mydb"
-  parameter_group_name = "default.postgres14"
-  skip_final_snapshot  = true
-  publicly_accessible  = true
-
-
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  db_subnet_group_name   = aws_db_subnet_group.default.name
-
-  tags = {
-    Name = "postgres"
-  }
-}
-
-resource "aws_db_subnet_group" "default" {
-  name       = "main"
-  subnet_ids = [aws_subnet.public.id, aws_subnet.private.id, aws_subnet.private2.id]
-
-  tags = {
-    Name = "My DB subnet group"
-  }
-}
-
-output "rds_endpoint" {
-  value = aws_db_instance.default.endpoint
+output "db_endpoint" {
+  value = aws_db_instance.postgres_instance.endpoint
 }
