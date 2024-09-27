@@ -3,6 +3,7 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgres_instance" {
+  identifier           = "postgres-db"
   allocated_storage    = 20
   engine               = "postgres"
   engine_version       = "14"    # Specify desired PostgreSQL version
