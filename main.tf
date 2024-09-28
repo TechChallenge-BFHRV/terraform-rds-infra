@@ -29,8 +29,8 @@ resource "aws_db_instance" "postgres_instance" {
   engine_version       = "14"
   instance_class       = "db.t3.micro"
   db_name              = "techchallenge"
-  username             = "docker"
-  password             = "dockerTech"
+  username             = "docker"   # Master username
+  password             = "dockerTech"   # Master password
   parameter_group_name = "default.postgres14"
   publicly_accessible  = true
   skip_final_snapshot  = true
