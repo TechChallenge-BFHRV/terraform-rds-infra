@@ -5,6 +5,11 @@ terraform {
       version = "~> 5.0"
     }
   }
+  backend "s3" {
+    bucket = "terraform-s3-tf"  # adicionar o nome do bucket criado no console da aws
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
@@ -45,7 +50,7 @@ resource "aws_security_group" "rds_sg" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
+    protocol    = "-1"  
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
