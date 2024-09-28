@@ -7,9 +7,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "your-s3-bucket-name"  # Substitua pelo seu nome de bucket S3
-    key            = "terraform.tfstate"      # Nome do arquivo de estado
-    region         = "us-east-1"              # Região do seu bucket S3
+    bucket         = "bucket-s3-terraform" 
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
   }
 }
 
