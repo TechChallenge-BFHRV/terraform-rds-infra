@@ -7,6 +7,13 @@ terraform {
   }
 }
 
+backend "s3" {
+    bucket         = "terraform-s3-bucket" 
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+  }
+}
+
 provider "aws" {
   region = "us-east-1"  # Change to your desired region
 }
