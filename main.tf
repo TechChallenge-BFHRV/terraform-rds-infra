@@ -5,12 +5,11 @@ terraform {
       version = "~> 5.0"
     }
   }
-}
 
-backend "s3" {
-    bucket         = "terraform-s3-bucket" 
-    key            = "terraform.tfstate"
-    region         = "us-east-1"
+  backend "s3" {
+    bucket         = "your-s3-bucket-name"  # Substitua pelo seu nome de bucket S3
+    key            = "terraform.tfstate"      # Nome do arquivo de estado
+    region         = "us-east-1"              # Região do seu bucket S3
   }
 }
 
@@ -24,6 +23,7 @@ resource "aws_db_instance" "postgres_instance" {
   engine               = "postgres"
   engine_version       = "14"    # Specify desired PostgreSQL version
   instance_class       = "db.t3.micro"
+  db_name              = "techchallenge"
   username             = "docker"   # Master username
   password             = "dockerTech"   # Master password
   parameter_group_name = "default.postgres14"
