@@ -45,11 +45,13 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
         if: github.ref == 'refs/heads/main'
 
-      # Adicionar terraform.tfstate ao Git
+      
       - name: Add terraform.tfstate to Git
-        run: git add terraform.tfstate terraform.tfstate.backup
+        run: |
+          git add terraform.tfstate terraform.tfstate.backup
+        if: github.ref == 'refs/heads/main'
 
-      # Commit e push terraform.tfstate
+      
       - name: Commit and Push terraform.tfstate
         run: |
           git config --global user.name "GitHub Actions"
@@ -59,4 +61,3 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
