@@ -17,6 +17,7 @@ resource "aws_db_instance" "postgres_instance" {
   engine               = "postgres"
   engine_version       = "14"    # Specify desired PostgreSQL version
   instance_class       = "db.t3.micro"
+  db_name              = "techchallenge"
   username             = "docker"   # Master username
   password             = "dockerTech"   # Master password
   parameter_group_name = "default.postgres14"
