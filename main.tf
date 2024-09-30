@@ -6,8 +6,8 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "terraform-s3-tf"  # adicionar o nome do bucket criado no console da aws
-    key    = "terraform.tfstate"
+    bucket = "techchallenge-foodtotem-terraform-state"
+    key    = "state/terraform.tfstate"
     region = "us-east-1"
   }
 }
