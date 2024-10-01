@@ -11,3 +11,4 @@
 ## Database Infrastructure
 
 - AWS RDS with PostgreSQL
+- Deploy vídeo 01/10/2024
