@@ -29,7 +29,8 @@ resource "aws_db_instance" "postgres_instance" {
   publicly_accessible  = true      # Make it publicly accessible
   skip_final_snapshot  = true      # Skip final snapshot on delete
   vpc_security_group_ids = [aws_security_group.rds_sg.id]  # Link to security group
-
+  storage_encrypted = true
+  backup_retention_period = 7
   tags = {
     Name = "Postgres-RDS"
   }
