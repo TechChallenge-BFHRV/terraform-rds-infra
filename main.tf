@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "techchallenge-foodtotem-terraform-state"
+    bucket = "techchallenge-4-foodtotem-terraform-state"
     key    = "state/terraform.tfstate"
     region = "us-east-1"
   }

@@ -1,4 +1,4 @@
-# FIAP Tech Challenge 7SOAT - Tech Challenge #3
+# FIAP Tech Challenge 7SOAT - Tech Challenge #4
 
 ## Group #49 - Members
 
@@ -11,4 +11,3 @@
 ## Database Infrastructure
 
 - AWS RDS with PostgreSQL
-- Deploy vídeo 01/10/2024
